@@ -4,11 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import hu.blu3berry.sunny.core.presentation.navigation.sendEvent
 import hu.blu3berry.sunny.database.FoodDatabase
-import hu.blu3berry.sunny.features.food.domain.model.FoodCategory
-import hu.blu3berry.sunny.features.food.domain.model.FoodItem
-import hu.blu3berry.sunny.features.food.domain.model.Quantity
-import hu.blu3berry.sunny.features.food.domain.model.StorageLocation
-import hu.blu3berry.sunny.features.food.domain.model.UnitOfMeasure
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

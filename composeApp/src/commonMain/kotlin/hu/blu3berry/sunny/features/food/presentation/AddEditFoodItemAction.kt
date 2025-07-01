@@ -14,4 +14,6 @@ sealed interface AddEditFoodItemAction {
     data class OnLocationChanged(val value: StorageLocation) : AddEditFoodItemAction
     data class OnNotesChanged(val value: String) : AddEditFoodItemAction
     data object OnSaveClicked : AddEditFoodItemAction
+
+    data object OnBackPressed : AddEditFoodItemAction
 }

@@ -14,7 +14,13 @@ interface FoodItemDao {
 
     @Delete
     suspend fun deleteFoodItem(foodItem: FoodItem)
+    @Query("SELECT * FROM food_items WHERE id = :id")
+    suspend fun getFoodItemById(id: Int): FoodItem?
 
     @Query("SELECT * FROM food_items")
     fun getAllFoodItems(): Flow<List<FoodItem>>
+
+
+    @Query("SELECT * FROM food_items WHERE id = :id")
+    fun getFoodItemByIdFlow(id: Int): Flow<FoodItem?>
 }

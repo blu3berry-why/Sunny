@@ -1,5 +1,6 @@
 package hu.blu3berry.sunny.features.food.presentation
 
+import hu.blu3berry.sunny.core.presentation.UiText
 import hu.blu3berry.sunny.features.food.domain.model.FoodCategory
 import hu.blu3berry.sunny.features.food.domain.model.FoodItem
 import hu.blu3berry.sunny.features.food.domain.model.Quantity
@@ -14,11 +15,14 @@ data class AddEditFoodItemState(
     val unit: UnitOfMeasure = UnitOfMeasure.PIECE,
     val expirationDate: LocalDate? = null,
     val location: StorageLocation = StorageLocation.PANTRY,
-    val notes: String = ""
+    val notes: String? = "",
+    val isLoading: Boolean = false,
+    val error: UiText? = null
 )
 
-fun AddEditFoodItemState.toFoodItem(): FoodItem {
+fun AddEditFoodItemState.toFoodItem(id : Int? = null): FoodItem {
     return FoodItem(
+        id = id,
         name = name,
         category = category,
         quantity = Quantity(amount, unit),
@@ -27,3 +31,17 @@ fun AddEditFoodItemState.toFoodItem(): FoodItem {
         notes = notes
     )
 }
+
+fun UpdateStateByFoodItem(foodItem: FoodItem): AddEditFoodItemState {
+    return AddEditFoodItemState(
+        name = foodItem.name,
+        category = foodItem.category,
+        amount = foodItem.quantity.amount,
+        unit = foodItem.quantity.unit,
+        expirationDate = foodItem.expirationDate,
+        location = foodItem.location,
+        notes = foodItem.notes
+    )
+}
+
+

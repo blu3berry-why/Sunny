@@ -27,7 +27,7 @@ fun <T> ObserveAsEvents(
 
 
 @Composable
-fun <T> Flow<T>.asEvents(
+fun <T> Flow<T>.OnEvent(
     onEvent: (T) -> Unit,
 ) {
     ObserveAsEvents(
@@ -38,6 +38,6 @@ fun <T> Flow<T>.asEvents(
 
 suspend fun <T> Channel<T>.sendEvent(event: T) {
     withContext(Dispatchers.Main.immediate){
-        send(event)
+        this@sendEvent.send(event)
     }
 }

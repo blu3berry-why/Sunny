@@ -18,22 +18,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import hu.blu3berry.sunny.features.food.domain.model.FoodCategory
 import hu.blu3berry.sunny.features.food.domain.model.StorageLocation
 import hu.blu3berry.sunny.features.food.domain.model.UnitOfMeasure
 import hu.blu3berry.sunny.features.food.domain.usecase.SaveFoodItemUseCase
 import hu.blu3berry.sunny.features.food.presentation.components.DatePickerField
 import hu.blu3berry.sunny.features.food.presentation.components.DropdownSelector
+import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun AddEditFoodItemViewRoot(
-    foodItemId: Int? = null,
-    viewModel: AddEditFoodItemViewModel = remember { 
-        AddEditFoodItemViewModel(
-            saveFoodItemUseCase = SaveFoodItemUseCase(),
-            foodItemId = foodItemId
-        )
-    }
+    viewModel: AddEditFoodItemViewModel = koinViewModel ()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -98,7 +95,7 @@ fun AddEditFoodItemView(
         )
 
         OutlinedTextField(
-            value = state.notes,
+            value = state.notes ?: "",
             onValueChange = { onAction(AddEditFoodItemAction.OnNotesChanged(it)) },
             label = { Text("Notes") },
             modifier = Modifier.fillMaxWidth()

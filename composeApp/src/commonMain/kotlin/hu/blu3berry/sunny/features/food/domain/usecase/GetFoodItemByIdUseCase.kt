@@ -4,17 +4,18 @@ import hu.blu3berry.sunny.features.food.domain.model.FoodItem
 import hu.blu3berry.sunny.features.food.domain.repository.FoodRepository
 
 /**
- * Use case for saving a food item to the repository.
+ * Use case for retrieving a food item by its ID from the repository.
  * This class follows the clean architecture principles by depending on the repository interface.
  */
-class SaveFoodItemUseCase(
+class GetFoodItemByIdUseCase(
     private val foodRepository: FoodRepository
 ) {
     /**
-     * Save a food item to the repository.
-     * @param item The food item to save
+     * Retrieve a food item by its ID from the repository.
+     * @param id The ID of the food item to retrieve
+     * @return The food item if found, null otherwise
      */
-    suspend operator fun invoke(item: FoodItem) {
-        foodRepository.saveFoodItem(item)
+    suspend operator fun invoke(id: Int): FoodItem? {
+        return foodRepository.getFoodItemById(id)
     }
 }
