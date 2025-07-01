@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <string name="hello_world">Hello World!</string>
+    <string name="error_disk_full">Storage is full. Please free up some space.</string>
+    <string name="error_unknown">An unknown error occurred. Please try again.</string>
+    <string name="error_request_timeout">Request timed out. Please try again.</string>
+    <string name="error_too_many_requests">Too many requests. Please try again later.</string>
+    <string name="error_no_internet">No internet connection. Please check your network.</string>
+    <string name="error_serialization">Error processing data. Please try again.</string>
+    <string name="error_unauthorized">Unauthorized access. Please log in again.</string>
+</resources>
