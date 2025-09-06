@@ -7,12 +7,11 @@ on:
 
 jobs:
   build:
-    name: Upload APK to App Tester
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up JDK 17 (required by AGP 8.x)
+      - name: Set up JDK 17 (required by AGP 8.11)
         uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -24,13 +23,13 @@ jobs:
       - name: Make wrapper executable
         run: chmod +x gradlew
 
-      - name: Build debug APK
-        run: ./gradlew :app:assembleDebug
+      - name: Build debug APK (composeApp)
+        run: ./gradlew :composeApp:assembleDebug --stacktrace
 
-      - name: Verify APK exists (debug)
+      - name: Verify APK exists
         run: |
-          ls -la app/build/outputs/apk/debug || true
-          test -f app/build/outputs/apk/debug/app-debug.apk
+          ls -la composeApp/build/outputs/apk/debug || true
+          test -f composeApp/build/outputs/apk/debug/composeApp-debug.apk
 
       - name: Upload to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1.7.1
@@ -38,4 +37,4 @@ jobs:
           appId: ${{ secrets.SUNNY_ANDROID_APP_ID_DEBUG }}
           serviceCredentialsFileContent: ${{ secrets.SERVICE_ACCOUNT_CREDENTIALS_FILE_CONTENT }}
           groups: family-and-friends
-          file: app/build/outputs/apk/debug/app-debug.apk
+          file: composeApp/build/outputs/apk/debug/composeApp-debug.apk
