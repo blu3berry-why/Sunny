@@ -5,17 +5,35 @@ on:
     tags: [ v* ]
   workflow_dispatch:
 
+env:
+  ANDROID_COMPILE_SDK: "34"         # állítsd a projektedhez (nálad mehet 34 vagy 36)
+  ANDROID_BUILD_TOOLS: "33.0.2"     # állítsd a projektedhez
+  ANDROID_SDK_TOOLS: "9477386"
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up JDK 17 (required by AGP 8.11)
+      - name: Set up JDK 17 (AGP 8.x)
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
+
+      - name: Install Android SDK cmdline-tools + components
+        run: |
+          ANDROID_HOME="$PWD/android-sdk-root"
+          mkdir -p "$ANDROID_HOME"
+          wget -qO "$ANDROID_HOME/cmdline-tools.zip" "https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_TOOLS}_latest.zip"
+          unzip -q "$ANDROID_HOME/cmdline-tools.zip" -d "$ANDROID_HOME/cmdline-tools"
+          mv "$ANDROID_HOME/cmdline-tools/cmdline-tools" "$ANDROID_HOME/cmdline-tools/tools"
+          echo "$ANDROID_HOME/cmdline-tools/tools/bin" >> $GITHUB_PATH
+          echo "$ANDROID_HOME/platform-tools" >> $GITHUB_PATH
+          sdkmanager --version
+          yes | sdkmanager --licenses > /dev/null || true
+          sdkmanager "platforms;android-${ANDROID_COMPILE_SDK}" "platform-tools" "build-tools;${ANDROID_BUILD_TOOLS}"
 
       - name: Setup Gradle cache
         uses: gradle/actions/setup-gradle@v3
@@ -26,10 +44,16 @@ jobs:
       - name: Build debug APK (composeApp)
         run: ./gradlew :composeApp:assembleDebug --stacktrace
 
-      - name: Verify APK exists
+      - name: Rename artifact (if tag)
         run: |
-          ls -la composeApp/build/outputs/apk/debug || true
-          test -f composeApp/build/outputs/apk/debug/composeApp-debug.apk
+          APK="composeApp/build/outputs/apk/debug/composeApp-debug.apk"
+          if [ ! -f "$APK" ]; then echo "APK not found: $APK" && exit 1; fi
+          mkdir -p apk
+          if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
+            mv "$APK" "apk/Sera-${GITHUB_REF_NAME}.apk"
+          else
+            mv "$APK" "apk/Sera-${GITHUB_SHA::7}.apk"
+          fi
 
       - name: Upload to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1.7.1
@@ -37,4 +61,4 @@ jobs:
           appId: ${{ secrets.SUNNY_ANDROID_APP_ID_DEBUG }}
           serviceCredentialsFileContent: ${{ secrets.SERVICE_ACCOUNT_CREDENTIALS_FILE_CONTENT }}
           groups: family-and-friends
-          file: composeApp/build/outputs/apk/debug/composeApp-debug.apk
+          file: apk/$(ls apk)
