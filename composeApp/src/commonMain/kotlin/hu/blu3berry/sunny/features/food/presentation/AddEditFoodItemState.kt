@@ -16,6 +16,7 @@ data class AddEditFoodItemState(
     val expirationDate: LocalDate? = null,
     val location: StorageLocation = StorageLocation.PANTRY,
     val notes: String? = "",
+    val modalDatePickerVisible: Boolean = false,
     val isLoading: Boolean = false,
     val error: UiText? = null
 )

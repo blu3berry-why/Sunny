@@ -9,8 +9,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DisplayMode
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -24,7 +30,10 @@ import hu.blu3berry.sunny.features.food.domain.model.StorageLocation
 import hu.blu3berry.sunny.features.food.domain.model.UnitOfMeasure
 import hu.blu3berry.sunny.features.food.domain.usecase.SaveFoodItemUseCase
 import hu.blu3berry.sunny.features.food.presentation.components.DatePickerField
+import hu.blu3berry.sunny.features.food.presentation.components.DatePickerModalInput
 import hu.blu3berry.sunny.features.food.presentation.components.DropdownSelector
+import io.ktor.http.HttpHeaders.Date
+import kotlinx.datetime.LocalDateTime
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -44,8 +53,7 @@ fun AddEditFoodItemViewRoot(
 @Composable
 fun AddEditFoodItemView(
     state: AddEditFoodItemState,
-    onAction: (AddEditFoodItemAction) -> Unit,
-    onNavigateBack: () -> Unit = {}
+    onAction: (AddEditFoodItemAction) -> Unit
 ) {
     Column(modifier = Modifier.padding(16.dp)) {
         OutlinedTextField(
@@ -81,11 +89,24 @@ fun AddEditFoodItemView(
             )
         }
 
-        DatePickerField(
-            label = "Expiration Date",
-            date = state.expirationDate,
-            onDateSelected = { onAction(AddEditFoodItemAction.OnExpirationDateChanged(it)) }
+        if (state.modalDatePickerVisible) {
+
+        DatePickerModalInput(
+            onDateSelected = {
+                onAction(AddEditFoodItemAction.OnExpirationDateChanged(it)) },
+            onDismiss = { onAction(AddEditFoodItemAction.OnDatePickerModalToggled) },
+            initialDate = state.expirationDate
         )
+        }
+
+        Button(
+            onClick = { onAction(AddEditFoodItemAction.OnDatePickerModalToggled) },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Expiration Date: ${state.expirationDate?.toString() ?: "Select Expiration Date"}")
+        }
+
+
 
         DropdownSelector(
             label = "Location",
@@ -108,10 +129,10 @@ fun AddEditFoodItemView(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Button(
-                onClick = { onNavigateBack() },
+                onClick = { onAction(AddEditFoodItemAction.OnBackPressed) },
                 modifier = Modifier.weight(1f)
             ) {
-                Text("Back")
+                Text("Cancel")
             }
 
             Spacer(modifier = Modifier.width(8.dp))

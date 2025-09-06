@@ -1,11 +1,19 @@
 package hu.blu3berry.sunny.features.food.presentation.components
 
 import androidx.compose.material3.Button
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DisplayMode
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.todayIn
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.runtime.LaunchedEffect
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
@@ -23,8 +31,51 @@ fun DatePickerField(
     Button(onClick = {
         // Use platform-specific date picker or fallback
         // For now, mock with today:
-        onDateSelected(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date)
+       // onDateSelected(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date)
     }) {
         Text("$label: $formattedDate")
     }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalTime::class)
+@Composable
+fun DatePickerModalInput(
+    onDateSelected: (LocalDate) -> Unit,
+    onDismiss: () -> Unit,
+    initialDate: LocalDate? = null
+) {
+
+    val datePickerState = rememberDatePickerState(initialDisplayMode = DisplayMode.Picker)
+    LaunchedEffect(false) {
+        datePickerState.selectedDateMillis = initialDate?.toEpochMilliseconds() ?: Clock.System.now().toEpochMilliseconds()
+    }
+
+    DatePickerDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton(onClick = {
+                onDateSelected(datePickerState.selectedDateMillis?.toLocalDateTime()?.date ?: LocalDate(2023, 1, 1))
+                onDismiss()
+            }) {
+                Text("OK")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        }
+    ) {
+        DatePicker(state = datePickerState)
+    }
+}
+
+
+    fun Long.toLocalDateTime(timeZone: TimeZone = TimeZone.currentSystemDefault()): LocalDateTime {
+        return kotlinx.datetime.Instant.fromEpochMilliseconds(this).toLocalDateTime(timeZone)
+    }
+
+fun LocalDate.toEpochMilliseconds(): Long {
+    return this.atStartOfDayIn(TimeZone.UTC).toEpochMilliseconds()
 }

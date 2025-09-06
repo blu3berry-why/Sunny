@@ -15,5 +15,7 @@ sealed interface AddEditFoodItemAction {
     data class OnNotesChanged(val value: String) : AddEditFoodItemAction
     data object OnSaveClicked : AddEditFoodItemAction
 
+    data object OnDatePickerModalToggled : AddEditFoodItemAction
+
     data object OnBackPressed : AddEditFoodItemAction
 }

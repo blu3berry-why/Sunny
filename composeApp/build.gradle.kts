@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
+    alias(libs.plugins.google.services)
 }
 
 kotlin {
@@ -47,6 +48,9 @@ kotlin {
             implementation(libs.koin.android)
             implementation(libs.koin.androidx.compose)
             implementation(libs.ktor.client.okhttp)
+            // because of the bom
+            implementation(project.dependencies.platform(libs.firebase.platform))
+            implementation(libs.bundles.firebase)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -91,6 +95,14 @@ kotlin {
 android {
     namespace = "hu.blu3berry.sunny"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
+
+    buildTypes {
+        getByName("debug") {
+            isMinifyEnabled = false
+            applicationIdSuffix = ".dev"
+            versionNameSuffix = "-DEBUG"
+        }
+    }
 
     defaultConfig {
         applicationId = "hu.blu3berry.sunny"

@@ -37,13 +37,17 @@ sealed class AddEditFoodItemViewModel(
             is AddEditFoodItemAction.OnUnitChanged -> _state.update { it.copy(unit = action.value) }
             is AddEditFoodItemAction.OnExpirationDateChanged -> _state.update {
                 it.copy(
-                    expirationDate = action.value
+                    expirationDate = action.value,
                 )
             }
 
             is AddEditFoodItemAction.OnLocationChanged -> _state.update { it.copy(location = action.value) }
             is AddEditFoodItemAction.OnNotesChanged -> _state.update { it.copy(notes = action.value) }
 
+            AddEditFoodItemAction.OnDatePickerModalToggled -> _state.update { it.copy(
+                modalDatePickerVisible = !it.modalDatePickerVisible
+            )
+            }
             is AddEditFoodItemAction.OnSaveClicked -> {
                 viewModelScope.launch {
                     navigationChannel.sendEvent(NavigationAction.OnFoodItemSaved)

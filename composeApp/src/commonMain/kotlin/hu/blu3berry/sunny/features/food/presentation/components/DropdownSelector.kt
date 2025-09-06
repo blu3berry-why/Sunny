@@ -16,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 
 
 @Composable
@@ -41,10 +42,14 @@ fun <T : Enum<T>> DropdownSelector(
                     modifier = Modifier.clickable { expanded = !expanded }
                 )
             },
-            modifier = Modifier.fillMaxWidth().clickable { expanded = true }
+            modifier = Modifier.clickable { expanded = true }.fillMaxWidth()
         )
 
-        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier.fillMaxWidth()
+        ) {
             options.forEach { option ->
                 DropdownMenuItem(
                     onClick = {
