@@ -16,4 +16,3 @@ fun initKoin(config: KoinAppDeclaration? = null) {
         )
     }
 }
-
