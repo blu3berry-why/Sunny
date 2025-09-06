@@ -24,16 +24,24 @@ jobs:
 
       - name: Install Android SDK cmdline-tools + components
         run: |
-          ANDROID_HOME="$PWD/android-sdk-root"
-          mkdir -p "$ANDROID_HOME"
+          set -e
+          export ANDROID_HOME="$PWD/android-sdk-root"
+          export ANDROID_SDK_ROOT="$ANDROID_HOME"
+          mkdir -p "$ANDROID_HOME/cmdline-tools"
+          
+          # download cmdline-tools
           wget -qO "$ANDROID_HOME/cmdline-tools.zip" "https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_TOOLS}_latest.zip"
           unzip -q "$ANDROID_HOME/cmdline-tools.zip" -d "$ANDROID_HOME/cmdline-tools"
-          mv "$ANDROID_HOME/cmdline-tools/cmdline-tools" "$ANDROID_HOME/cmdline-tools/tools"
-          echo "$ANDROID_HOME/cmdline-tools/tools/bin" >> $GITHUB_PATH
+          mv "$ANDROID_HOME/cmdline-tools/cmdline-tools" "$ANDROID_HOME/cmdline-tools/latest"
+          
+          # make sdkmanager available NOW (current step) and for later steps
+          export PATH="$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH"
+          echo "$ANDROID_HOME/cmdline-tools/latest/bin" >> $GITHUB_PATH
           echo "$ANDROID_HOME/platform-tools" >> $GITHUB_PATH
+          
           sdkmanager --version
           yes | sdkmanager --licenses > /dev/null || true
-          sdkmanager "platforms;android-${ANDROID_COMPILE_SDK}" "platform-tools" "build-tools;${ANDROID_BUILD_TOOLS}"
+          sdkmanager "platform-tools" "platforms;android-${ANDROID_COMPILE_SDK}" "build-tools;${ANDROID_BUILD_TOOLS}"
 
       - name: Setup Gradle cache
         uses: gradle/actions/setup-gradle@v3
