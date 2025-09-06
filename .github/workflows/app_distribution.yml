@@ -19,7 +19,7 @@ jobs:
      - name: build release
        run: bash ./gradlew assembleDebug
      - name: upload artifact to Firebase App Distribution
-       uses: wzieba/Firebase-Distribution-Github-Action@v1.2.2
+       uses: wzieba/Firebase-Distribution-Github-Action@v1.7.1
        with:
          appId: ${{ secrets.SUNNY_ANDROID_APP_ID_DEBUG }}
          serviceCredentialsFileContent:  ${{ secrets.SERVICE_ACCOUNT_CREDENTIALS_FILE_CONTENT }}
