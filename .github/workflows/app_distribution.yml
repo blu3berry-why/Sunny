@@ -16,12 +16,39 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - name: Write debug google-services.json from secret
+      - name: Write & validate debug google-services.json
         run: |
+          set -e
+          
+          # 1) Write file from secret
           mkdir -p composeApp/src/debug
-          echo "${GOOGLE_SERVICES_JSON_DEBUG_B64}" | base64 -d > composeApp/src/debug/google-services.json
+          echo "$GOOGLE_SERVICES_JSON_DEBUG_B64" | base64 -d > composeApp/src/debug/google-services.json || {
+            echo "::error::Base64 decode failed – is the secret a single line base64?";
+            exit 1;
+          }
+          
+          # 2) Strip UTF-8 BOM if present (can cause 'Malformed root json')
+          sed -i '1s/^\xEF\xBB\xBF//' composeApp/src/debug/google-services.json || true
+          
+          # 3) Basic structure check (must have project_info & client)
+          if ! grep -q '"project_info"' composeApp/src/debug/google-services.json || ! grep -q '"client"' composeApp/src/debug/google-services.json; then
+            echo "::group::First lines of the file"; head -n 20 composeApp/src/debug/google-services.json || true; echo "::endgroup::"
+            echo "::error::This doesn't look like google-services.json (did you paste a *service account* JSON by mistake?)";
+            exit 1
+          fi
+          
+          # 4) Strict JSON check
+          jq . composeApp/src/debug/google-services.json >/dev/null
+          
+          # 5) Ensure package name matches your debug appId (applicationId + '.dev')
+          #    For you: hu.blu3berry.sunny.dev
+          if ! grep -q '"package_name"[[:space:]]*:[[:space:]]*"hu\.blu3berry\.sunny\.dev"' composeApp/src/debug/google-services.json; then
+            echo "::error::google-services.json package_name must be 'hu.blu3berry.sunny.dev' (matches applicationIdSuffix '.dev')";
+            exit 1
+          fi
         env:
           GOOGLE_SERVICES_JSON_DEBUG_B64: ${{ secrets.GOOGLE_SERVICES_JSON_DEBUG_B64 }}
+
       - name: build release
         run: bash ./gradlew assembleDebug
       - name: upload artifact to Firebase App Distribution
