@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "928602343738",
+    "project_id": "sunny-c0495",
+    "storage_bucket": "sunny-c0495.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:928602343738:android:9812d83fef9f3fff98e803",
+        "android_client_info": {
+          "package_name": "hu.blu3berry.sunny.dev"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBN4FUA5_z1PlhvUidKVVrQj8LMlJqkVeY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
