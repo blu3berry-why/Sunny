@@ -1,43 +1,49 @@
 name: Build and Release
-'on':
+on:
   push:
-    branches:
-      - master
-    tags:
-      - v*
+    branches: [ master ]
+    tags: [ v* ]
+  workflow_dispatch:
+
 jobs:
   build:
-    name: Upload APK to App Tester
     runs-on: ubuntu-latest
+    # uncomment if you stored the secret as an Environment secret:
+    # environment: app-distribution-debug
     steps:
-      - uses: actions/checkout@v2.4.0
-      - name: Setup JDK
-        uses: actions/setup-java@v2.5.0
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
+
       - name: Write & validate debug google-services.json
+        env:
+          GOOGLE_SERVICES_JSON_DEBUG_B64: ${{ secrets.GOOGLE_SERVICES_JSON_DEBUG_B64 }}
         run: |
           set -e
+          if [ -z "${GOOGLE_SERVICES_JSON_DEBUG_B64:-}" ]; then
+            echo "::error:: Secret GOOGLE_SERVICES_JSON_DEBUG_B64 is empty or not set."
+            echo "Create it in Settings → Secrets and variables → Actions (repository secret),"
+            echo "or set job.environment to the Environment that holds it."
+            exit 1
+          fi
+
           mkdir -p composeApp/src/debug
           echo "$GOOGLE_SERVICES_JSON_DEBUG_B64" | base64 -d > composeApp/src/debug/google-services.json
-          # (opcionális) BOM eltávolítás, ha lenne
           sed -i '1s/^\xEF\xBB\xBF//' composeApp/src/debug/google-services.json || true
-          # Gyors szerkezeti ellenőrzés
           jq . composeApp/src/debug/google-services.json > /dev/null
           grep -q '"project_info"' composeApp/src/debug/google-services.json
           grep -q '"client"' composeApp/src/debug/google-services.json
           grep -q '"package_name"[[:space:]]*:[[:space:]]*"hu\.blu3berry\.sunny\.dev"' composeApp/src/debug/google-services.json
-        env:
-          GOOGLE_SERVICES_JSON_DEBUG_B64: ${{ secrets.GOOGLE_SERVICES_JSON_DEBUG_B64 }}
 
-      - name: build release
-        run: bash ./gradlew assembleDebug
-      - name: upload artifact to Firebase App Distribution
+      - name: Build debug
+        run: ./gradlew :composeApp:assembleDebug --stacktrace
+
+      - name: Upload to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1.7.1
         with:
           appId: ${{ secrets.SUNNY_ANDROID_APP_ID_DEBUG }}
-          serviceCredentialsFileContent:  ${{ secrets.SERVICE_ACCOUNT_CREDENTIALS_FILE_CONTENT }}
+          serviceCredentialsFileContent: ${{ secrets.SERVICE_ACCOUNT_CREDENTIALS_FILE_CONTENT }}
           groups: family-and-friends
-          file: app/build/outputs/apk/debug/app-debug.apk
-
+          file: composeApp/build/outputs/apk/debug/composeApp-debug.apk
