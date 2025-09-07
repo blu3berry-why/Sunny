@@ -31,3 +31,4 @@ jobs:
           serviceCredentialsFileContent:  ${{ secrets.SERVICE_ACCOUNT_CREDENTIALS_FILE_CONTENT }}
           groups: family-and-friends
           file: app/build/outputs/apk/debug/app-debug.apk
+
