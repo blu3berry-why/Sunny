@@ -97,8 +97,14 @@ android {
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        versionName = (project.findProperty("VERSION_NAME") as String?) ?: "0.0.1"
-        versionCode = (project.findProperty("VERSION_CODE") as String?)?.toInt() ?: 1
+        versionName = providers.environmentVariable("VERSION_NAME")
+            .orElse("0.0.1")
+            .get()
+
+        versionCode = providers.environmentVariable("VERSION_CODE")
+            .map(String::toInt)
+            .orElse(1)
+            .get()
     }
 
     buildTypes {
