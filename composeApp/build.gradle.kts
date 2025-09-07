@@ -97,7 +97,7 @@ android {
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        versionName = (project.findProperty("VERSION_NAME") as String?) ?: "1.0"
+        versionName = (project.findProperty("VERSION_NAME") as String?) ?: "0.0.1"
         versionCode = (project.findProperty("VERSION_CODE") as String?)?.toInt() ?: 1
     }
 
