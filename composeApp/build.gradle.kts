@@ -96,17 +96,6 @@ android {
     namespace = "hu.blu3berry.sunny"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
-    defaultConfig {
-        versionName = providers.environmentVariable("VERSION_NAME")
-            .orElse("0.0.1")
-            .get()
-
-        versionCode = providers.environmentVariable("VERSION_CODE")
-            .map(String::toInt)
-            .orElse(1)
-            .get()
-    }
-
     buildTypes {
         getByName("debug") {
             isMinifyEnabled = false
@@ -124,8 +113,8 @@ android {
         applicationId = "hu.blu3berry.sunny"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
+        versionName = (project.findProperty("VERSION_NAME") as String?) ?: "0.0.1"
+        versionCode = (project.findProperty("VERSION_CODE") as String?)?.toInt() ?: 1
     }
     packaging {
         resources {
