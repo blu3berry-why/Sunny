@@ -15,7 +15,7 @@ jobs:
         uses: actions/setup-java@v2.5.0
         with:
           distribution: temurin
-          java-version: '11'
+          java-version: '17'
       - name: build release
         run: bash ./gradlew assembleDebug
       - name: upload artifact to Firebase App Distribution
