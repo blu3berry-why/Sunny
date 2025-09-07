@@ -19,7 +19,7 @@ jobs:
 
       - name: Write & validate debug google-services.json
         env:
-          GOOGLE_SERVICES_JSON_DEBUG_B64: ${{ secrets.GOOGLE_SERVICES_JSON_DEBUG_B64 }}
+          GOOGLE_SERVICES_JSON_DEBUG_B64: ${{ secrets.GOOGLE_SERVICES_JSON_BASE_64 }}
         run: |
           set -e
           if [ -z "${GOOGLE_SERVICES_JSON_DEBUG_B64:-}" ]; then
