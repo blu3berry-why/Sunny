@@ -46,6 +46,9 @@ jobs:
       - name: Setup Gradle cache
         uses: gradle/actions/setup-gradle@v3
 
+      - name: See directories
+        run: ls
+
       - name: Make wrapper executable
         run: chmod +x gradlew
 
