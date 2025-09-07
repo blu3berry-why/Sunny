@@ -16,6 +16,12 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
+      - name: Write debug google-services.json from secret
+        run: |
+          mkdir -p composeApp/src/debug
+          echo "${GOOGLE_SERVICES_JSON_DEBUG_B64}" | base64 -d > composeApp/src/debug/google-services.json
+        env:
+          GOOGLE_SERVICES_JSON_DEBUG_B64: ${{ secrets.GOOGLE_SERVICES_JSON_DEBUG_B64 }}
       - name: build release
         run: bash ./gradlew assembleDebug
       - name: upload artifact to Firebase App Distribution
