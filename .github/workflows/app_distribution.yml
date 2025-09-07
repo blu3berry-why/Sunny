@@ -37,8 +37,13 @@ jobs:
           grep -q '"client"' composeApp/src/debug/google-services.json
           grep -q '"package_name"[[:space:]]*:[[:space:]]*"hu\.blu3berry\.sunny\.dev"' composeApp/src/debug/google-services.json
 
-      - name: Build debug
-        run: ./gradlew :composeApp:assembleDebug --stacktrace
+      - name: Build debug (use tag as versionName when tagged)
+        run: |
+          ARGS=""
+          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
+            ARGS="-PversionName=${GITHUB_REF_NAME} -PversionCode=${GITHUB_RUN_NUMBER}"
+          fi
+          ./gradlew :composeApp:assembleDebug --stacktrace $ARGS
 
       - name: Upload to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1.7.1
