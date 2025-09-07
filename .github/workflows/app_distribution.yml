@@ -8,10 +8,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    # uncomment if you stored the secret as an Environment secret:
-    # environment: app-distribution-debug
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -24,11 +23,8 @@ jobs:
           set -e
           if [ -z "${GOOGLE_SERVICES_JSON_DEBUG_B64:-}" ]; then
             echo "::error:: Secret GOOGLE_SERVICES_JSON_DEBUG_B64 is empty or not set."
-            echo "Create it in Settings → Secrets and variables → Actions (repository secret),"
-            echo "or set job.environment to the Environment that holds it."
             exit 1
           fi
-
           mkdir -p composeApp/src/debug
           echo "$GOOGLE_SERVICES_JSON_DEBUG_B64" | base64 -d > composeApp/src/debug/google-services.json
           sed -i '1s/^\xEF\xBB\xBF//' composeApp/src/debug/google-services.json || true
@@ -37,13 +33,31 @@ jobs:
           grep -q '"client"' composeApp/src/debug/google-services.json
           grep -q '"package_name"[[:space:]]*:[[:space:]]*"hu\.blu3berry\.sunny\.dev"' composeApp/src/debug/google-services.json
 
-      - name: Build debug (use tag as versionName when tagged)
+      - name: Ensure Gradle wrapper exists
+        run: test -f gradlew || (echo "::error::gradlew not found; commit the wrapper." && exit 1)
+
+      - name: Make wrapper executable
+        run: chmod +x gradlew
+
+      - name: Derive version from tag (if tagged)
         run: |
-          ARGS=""
           if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
-            ARGS="-PversionName=${GITHUB_REF_NAME} -PversionCode=${GITHUB_RUN_NUMBER}"
+            echo "VERSION_NAME=${GITHUB_REF_NAME}" >> $GITHUB_ENV
+            echo "VERSION_CODE=${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
           fi
-          ./gradlew :composeApp:assembleDebug --stacktrace $ARGS
+
+      - name: Build debug (use tag as version when tagged)
+        run: |
+          ./gradlew :composeApp:assembleDebug --stacktrace \
+            -PVERSION_NAME="${VERSION_NAME:-1.0}" \
+            -PVERSION_CODE="${VERSION_CODE:-1}"
+
+      - name: Show built version (from output-metadata.json)
+        run: |
+          META=composeApp/build/outputs/apk/debug/output-metadata.json
+          test -f "$META" || (echo "::warning::No output-metadata.json found"; exit 0)
+          echo "Built version:"
+          jq -r '.elements[0] | "\(.versionName) (\(.versionCode)) -> \(.outputFile)"' "$META"
 
       - name: Upload to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1.7.1
