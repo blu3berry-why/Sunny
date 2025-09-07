@@ -1,75 +1,27 @@
 name: Build and Release
-on:
+'on':
   push:
-    branches: [ master ]
-    tags: [ v* ]
-  workflow_dispatch:
-
-env:
-  ANDROID_COMPILE_SDK: "34"         # állítsd a projektedhez (nálad mehet 34 vagy 36)
-  ANDROID_BUILD_TOOLS: "33.0.2"     # állítsd a projektedhez
-  ANDROID_SDK_TOOLS: "9477386"
-
+    branches:
+      - master
+    tags:
+      - v*
 jobs:
   build:
+    name: Upload APK to App Tester
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up JDK 17 (AGP 8.x)
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v2.4.0
+      - name: Setup JDK
+        uses: actions/setup-java@v2.5.0
         with:
           distribution: temurin
-          java-version: '17'
-
-      - name: Install Android SDK cmdline-tools + components
-        run: |
-          set -e
-          export ANDROID_HOME="$PWD/android-sdk-root"
-          export ANDROID_SDK_ROOT="$ANDROID_HOME"
-          mkdir -p "$ANDROID_HOME/cmdline-tools"
-          
-          # download cmdline-tools
-          wget -qO "$ANDROID_HOME/cmdline-tools.zip" "https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_TOOLS}_latest.zip"
-          unzip -q "$ANDROID_HOME/cmdline-tools.zip" -d "$ANDROID_HOME/cmdline-tools"
-          mv "$ANDROID_HOME/cmdline-tools/cmdline-tools" "$ANDROID_HOME/cmdline-tools/latest"
-          
-          # make sdkmanager available NOW (current step) and for later steps
-          export PATH="$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH"
-          echo "$ANDROID_HOME/cmdline-tools/latest/bin" >> $GITHUB_PATH
-          echo "$ANDROID_HOME/platform-tools" >> $GITHUB_PATH
-          
-          sdkmanager --version
-          yes | sdkmanager --licenses > /dev/null || true
-          sdkmanager "platform-tools" "platforms;android-${ANDROID_COMPILE_SDK}" "build-tools;${ANDROID_BUILD_TOOLS}"
-
-      - name: Setup Gradle cache
-        uses: gradle/actions/setup-gradle@v3
-
-      - name: See directories
-        run: ls
-
-      - name: Make wrapper executable
-        run: chmod +x gradlew
-
-      - name: Build debug APK (composeApp)
-        run: ./gradlew :composeApp:assembleDebug --stacktrace
-
-      - name: Rename artifact (if tag)
-        run: |
-          APK="composeApp/build/outputs/apk/debug/composeApp-debug.apk"
-          if [ ! -f "$APK" ]; then echo "APK not found: $APK" && exit 1; fi
-          mkdir -p apk
-          if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
-            mv "$APK" "apk/Sera-${GITHUB_REF_NAME}.apk"
-          else
-            mv "$APK" "apk/Sera-${GITHUB_SHA::7}.apk"
-          fi
-
-      - name: Upload to Firebase App Distribution
+          java-version: '11'
+      - name: build release
+        run: bash ./gradlew assembleDebug
+      - name: upload artifact to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1.7.1
         with:
           appId: ${{ secrets.SUNNY_ANDROID_APP_ID_DEBUG }}
-          serviceCredentialsFileContent: ${{ secrets.SERVICE_ACCOUNT_CREDENTIALS_FILE_CONTENT }}
+          serviceCredentialsFileContent:  ${{ secrets.SERVICE_ACCOUNT_CREDENTIALS_FILE_CONTENT }}
           groups: family-and-friends
-          file: apk/$(ls apk)
+          file: app/build/outputs/apk/debug/app-debug.apk
