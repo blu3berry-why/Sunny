@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
@@ -44,7 +45,9 @@ fun AddEditFoodItemViewRoot(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    Scaffold {
+    Scaffold(
+        modifier = Modifier.statusBarsPadding()
+    ) {
         AddEditFoodItemView(
             state = state,
             onAction = viewModel::onAction,
