@@ -25,11 +25,11 @@ class FoodItemListViewModel(
     val state = combine(
         _state,
         foodItems
-    ){  state, foodItems ->
+    ) { state, foodItems ->
         state.copy(
             foodItems = foodItems.filter { foodItem ->
                 foodItem.name.contains(state.searchQuery, ignoreCase = true)
-             },
+            },
             isLoading = false,
             error = null
         )
@@ -55,12 +55,14 @@ class FoodItemListViewModel(
             is FoodItemListAction.OnSearchQueryChanged -> {
                 _state.update { it.copy(searchQuery = action.query) }
             }
+
             is FoodItemListAction.LoadFoodItems -> {}
             is FoodItemListAction.OnFoodItemClicked -> {
                 viewModelScope.launch {
                     navigationChannel.sendEvent(NavigationAction.OnFoodItemClick(action.foodItem.id!!))
                 }
             }
+
             FoodItemListAction.OnNewFoodItemClick -> {
                 viewModelScope.launch {
                     navigationChannel.sendEvent(NavigationAction.OnNewFoodItemClick)

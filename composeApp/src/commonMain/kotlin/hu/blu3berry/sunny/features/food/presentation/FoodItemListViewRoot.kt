@@ -20,6 +20,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -37,11 +38,13 @@ fun FoodItemListViewRoot(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    Scaffold {
+        FoodItemListView(
+            state = state,
+            onAction = viewModel::onAction
+        )
+    }
 
-    FoodItemListView(
-        state = state,
-        onAction = viewModel::onAction
-    )
 
 }
 

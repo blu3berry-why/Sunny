@@ -14,6 +14,7 @@ import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
@@ -39,15 +40,16 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun AddEditFoodItemViewRoot(
-    viewModel: AddEditFoodItemViewModel = koinViewModel ()
+    viewModel: AddEditFoodItemViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-
-    AddEditFoodItemView(
-        state = state,
-        onAction = viewModel::onAction,
-    )
+    Scaffold {
+        AddEditFoodItemView(
+            state = state,
+            onAction = viewModel::onAction,
+        )
+    }
 }
 
 @Composable
@@ -73,7 +75,10 @@ fun AddEditFoodItemView(
         Row(verticalAlignment = Alignment.CenterVertically) {
             OutlinedTextField(
                 value = state.amount.toString(),
-                onValueChange = { it.toDoubleOrNull()?.let { amt -> onAction(AddEditFoodItemAction.OnAmountChanged(amt)) } },
+                onValueChange = {
+                    it.toDoubleOrNull()
+                        ?.let { amt -> onAction(AddEditFoodItemAction.OnAmountChanged(amt)) }
+                },
                 label = { Text("Amount") },
                 modifier = Modifier.weight(1f)
             )
@@ -91,12 +96,13 @@ fun AddEditFoodItemView(
 
         if (state.modalDatePickerVisible) {
 
-        DatePickerModalInput(
-            onDateSelected = {
-                onAction(AddEditFoodItemAction.OnExpirationDateChanged(it)) },
-            onDismiss = { onAction(AddEditFoodItemAction.OnDatePickerModalToggled) },
-            initialDate = state.expirationDate
-        )
+            DatePickerModalInput(
+                onDateSelected = {
+                    onAction(AddEditFoodItemAction.OnExpirationDateChanged(it))
+                },
+                onDismiss = { onAction(AddEditFoodItemAction.OnDatePickerModalToggled) },
+                initialDate = state.expirationDate
+            )
         }
 
         Button(

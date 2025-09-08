@@ -96,6 +96,13 @@ android {
     namespace = "hu.blu3berry.sunny"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
+    defaultConfig {
+        applicationId = "hu.blu3berry.sunny"
+        minSdk = libs.versions.android.minSdk.get().toInt()
+        targetSdk = libs.versions.android.targetSdk.get().toInt()
+        versionName = (project.findProperty("VERSION_NAME") as String?) ?: "0.0.1"
+        versionCode = (project.findProperty("VERSION_CODE") as String?)?.toInt() ?: 1
+    }
     buildTypes {
         getByName("debug") {
             isMinifyEnabled = false
@@ -109,13 +116,6 @@ android {
         }
     }
 
-    defaultConfig {
-        applicationId = "hu.blu3berry.sunny"
-        minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionName = (project.findProperty("VERSION_NAME") as String?) ?: "0.0.1"
-        versionCode = (project.findProperty("VERSION_CODE") as String?)?.toInt() ?: 1
-    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
