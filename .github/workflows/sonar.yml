@@ -55,7 +55,7 @@ jobs:
         run: ./gradlew koverXmlReport
       - name: Run SonarCloud Analysis
         run: |
-          ./gradlew sonar \
+          ./gradlew sonar --stacktrace --info \
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} \
             -Dsonar.organization=${{ secrets.SONAR_ORG }} \
             -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
