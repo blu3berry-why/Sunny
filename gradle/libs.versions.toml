@@ -24,6 +24,8 @@ ksp = "2.2.0-2.0.2"
 sqlite = "2.5.0-alpha11"
 room = "2.7.2"
 datetime = "0.6.0"
+sonarqube = "6.1.0.5360"
+kover = "0.9.1"
 
 google-services-plugin = "4.4.3"
 firebase-platform = "34.2.0"
@@ -75,6 +77,10 @@ kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime",
 firebase-platform = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-platform" }
 android-firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 
+# test
+coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
+koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
@@ -85,6 +91,9 @@ jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serializati
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 room = { id = "androidx.room", version.ref = "room" }
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services-plugin" }
+sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }
+
+kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 
 [bundles]
 ktor = [

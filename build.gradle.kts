@@ -9,4 +9,19 @@ plugins {
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.room) apply false
     alias(libs.plugins.google.services) apply false
+    alias(libs.plugins.sonarqube) // Important: do not use apply false!
+    alias(libs.plugins.kover)
+}
+
+sonarqube {
+    properties {
+        val koverReport = allprojects.mapNotNull { project ->
+            val reportPath = "${project.projectDir}/build/reports/kover/report.xml"
+            if (File(reportPath).exists()) reportPath else null
+        }.joinToString(",")
+        property("sonar.coverage.jacoco.xmlReportPaths", koverReport)
+    }
+}
+tasks.named("sonar") {
+    dependsOn(subprojects.map { it.tasks.named("koverXmlReport") })
 }

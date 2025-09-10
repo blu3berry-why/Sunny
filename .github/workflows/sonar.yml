@@ -1,0 +1,56 @@
+name: SonarCloud Analysis
+on:
+  push:
+    branches: [ main, kmp_with_analyze_tools ]
+  pull_request:
+    types: [ opened, synchronize, reopened ]
+jobs:
+  sonar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+      - name: Cache SonarQube packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Cache Gradle packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: ${{ runner.os }}-gradle
+      - name: Write & validate debug google-services.json
+        env:
+          GOOGLE_SERVICES_JSON_DEBUG_B64: ${{ secrets.GOOGLE_SERVICES_JSON_BASE_64 }}
+        run: |
+          set -e
+          if [ -z "${GOOGLE_SERVICES_JSON_DEBUG_B64:-}" ]; then
+            echo "::error:: Secret GOOGLE_SERVICES_JSON_DEBUG_B64 is empty or not set."
+            exit 1
+          fi
+          mkdir -p composeApp/src/debug
+          echo "$GOOGLE_SERVICES_JSON_DEBUG_B64" | base64 -d > composeApp/src/debug/google-services.json
+          sed -i '1s/^\xEF\xBB\xBF//' composeApp/src/debug/google-services.json || true
+          jq . composeApp/src/debug/google-services.json > /dev/null
+          grep -q '"project_info"' composeApp/src/debug/google-services.json
+          grep -q '"client"' composeApp/src/debug/google-services.json
+          grep -q '"package_name"[[:space:]]*:[[:space:]]*"hu\.blu3berry\.sunny\.dev"' composeApp/src/debug/google-services.json
+
+      - name: Generate Kover reports
+        run: ./gradlew koverXmlReport
+      - name: Run SonarCloud Analysis
+        run: |
+          ./gradlew sonar \
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} \
+            -Dsonar.organization=${{ secrets.SONAR_ORG }} \
+            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

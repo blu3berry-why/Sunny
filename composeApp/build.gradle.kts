@@ -11,6 +11,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
     alias(libs.plugins.google.services)
+    alias(libs.plugins.kover)
 }
 
 kotlin {
@@ -77,6 +78,11 @@ kotlin {
             implementation(libs.kotlinx.datetime)
 
         }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+            implementation(libs.coroutines.test)
+            implementation(libs.koin.test)
+        }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
@@ -113,6 +119,7 @@ android {
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
+            applicationIdSuffix = ".dev"
         }
     }
 
@@ -139,6 +146,33 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "hu.blu3berry.sunny"
             packageVersion = "1.0.0"
+        }
+    }
+}
+
+kover {
+    reports {
+        filters {
+            excludes {
+                annotatedBy("androidx.compose.runtime.Composable")
+                classes(
+                    "hu.blu3berry.sunny.features.food.presentation.addedit.AddEditFoodItemState",
+                    "hu.blu3berry.sunny.features.food.presentation.addedit.AddEditFoodItemStateKt",
+                    "hu.blu3berry.sunny.features.food.presentation.components.DatePickerFieldKt",
+                    "hu.blu3berry.sunny.AppKt",
+                    "hu.blu3berry.sunny.MainActivity"
+                )
+                packages(
+                    "hu.blu3berry.sunny.ui.*",
+                    "hu.blu3berry.sunny.features.food.presentation.*",
+                    "hu.blu3berry.sunny.features.food.di.*",
+                    "hu.blu3berry.sunny.features.auth.presentation.*",
+                    "hu.blu3berry.sunny.features.auth.di.*",
+                    "hu.blu3berry.sunny.core.presentation.*",
+                    "hu.blu3berry.sunny.core.di.*",
+                    "hu.blu3berry.sunny.AppKt"
+                )
+            }
         }
     }
 }
