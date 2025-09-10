@@ -1,10 +1,9 @@
-package hu.blu3berry.sunny.features.food.presentation
+package hu.blu3berry.sunny.features.food.presentation.addedit
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import hu.blu3berry.sunny.core.presentation.UiText
 import hu.blu3berry.sunny.core.presentation.navigation.sendEvent
-import hu.blu3berry.sunny.database.FoodDatabase
 import hu.blu3berry.sunny.features.food.domain.usecase.GetFoodItemByIdUseCase
 import hu.blu3berry.sunny.features.food.domain.usecase.SaveFoodItemUseCase
 import hu.blu3berry.sunny.features.food.domain.usecase.UpdateFoodItemUseCase
@@ -14,7 +13,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.text.category
 
 sealed class AddEditFoodItemViewModel(
 ) : ViewModel() {

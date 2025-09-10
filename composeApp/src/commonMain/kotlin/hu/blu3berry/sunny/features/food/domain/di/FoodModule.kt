@@ -5,9 +5,9 @@ import hu.blu3berry.sunny.features.food.domain.repository.FoodRepository
 import hu.blu3berry.sunny.features.food.domain.usecase.GetFoodItemByIdUseCase
 import hu.blu3berry.sunny.features.food.domain.usecase.SaveFoodItemUseCase
 import hu.blu3berry.sunny.features.food.domain.usecase.UpdateFoodItemUseCase
-import hu.blu3berry.sunny.features.food.presentation.AddFoodItemViewModel
-import hu.blu3berry.sunny.features.food.presentation.EditFoodItemViewModel
-import hu.blu3berry.sunny.features.food.presentation.FoodItemListViewModel
+import hu.blu3berry.sunny.features.food.presentation.addedit.AddFoodItemViewModel
+import hu.blu3berry.sunny.features.food.presentation.addedit.EditFoodItemViewModel
+import hu.blu3berry.sunny.features.food.presentation.list.FoodItemListViewModel
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModel

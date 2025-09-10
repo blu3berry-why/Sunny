@@ -7,11 +7,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import hu.blu3berry.sunny.features.food.presentation.AddEditFoodItemViewRoot
-import hu.blu3berry.sunny.features.food.presentation.AddFoodItemViewModel
-import hu.blu3berry.sunny.features.food.presentation.EditFoodItemViewModel
-import hu.blu3berry.sunny.features.food.presentation.FoodItemListViewModel
-import hu.blu3berry.sunny.features.food.presentation.FoodItemListViewRoot
+import hu.blu3berry.sunny.features.food.presentation.addedit.AddEditFoodItemViewRoot
+import hu.blu3berry.sunny.features.food.presentation.addedit.AddFoodItemViewModel
+import hu.blu3berry.sunny.features.food.presentation.addedit.EditFoodItemViewModel
+import hu.blu3berry.sunny.features.food.presentation.list.FoodItemListViewModel
+import hu.blu3berry.sunny.features.food.presentation.list.FoodItemListViewRoot
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 

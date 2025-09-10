@@ -1,4 +1,4 @@
-package hu.blu3berry.sunny.features.food.presentation
+package hu.blu3berry.sunny.features.food.presentation.addedit
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,33 +10,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.DisplayMode
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import hu.blu3berry.sunny.features.food.domain.model.FoodCategory
 import hu.blu3berry.sunny.features.food.domain.model.StorageLocation
 import hu.blu3berry.sunny.features.food.domain.model.UnitOfMeasure
-import hu.blu3berry.sunny.features.food.domain.usecase.SaveFoodItemUseCase
-import hu.blu3berry.sunny.features.food.presentation.components.DatePickerField
 import hu.blu3berry.sunny.features.food.presentation.components.DatePickerModalInput
 import hu.blu3berry.sunny.features.food.presentation.components.DropdownSelector
-import io.ktor.http.HttpHeaders.Date
-import kotlinx.datetime.LocalDateTime
-import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable

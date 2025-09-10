@@ -1,4 +1,4 @@
-package hu.blu3berry.sunny.features.food.presentation
+package hu.blu3berry.sunny.features.food.presentation.list
 
 import hu.blu3berry.sunny.features.food.domain.model.FoodItem
 
@@ -8,4 +8,6 @@ sealed interface FoodItemListAction {
     object OnNewFoodItemClick : FoodItemListAction
 
     data class OnFoodItemClicked(val foodItem: FoodItem) : FoodItemListAction
+
+    data class OnDeleteFoodItemClick(val foodItem: FoodItem) : FoodItemListAction
 }

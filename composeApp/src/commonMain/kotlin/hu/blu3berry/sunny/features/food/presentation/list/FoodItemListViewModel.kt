@@ -1,9 +1,11 @@
-package hu.blu3berry.sunny.features.food.presentation
+package hu.blu3berry.sunny.features.food.presentation.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import hu.blu3berry.sunny.core.presentation.navigation.sendEvent
 import hu.blu3berry.sunny.database.FoodDatabase
+import hu.blu3berry.sunny.features.food.domain.model.FoodItem
+import hu.blu3berry.sunny.features.food.presentation.list.FoodItemListViewModel.NavigationAction.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -15,7 +17,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
 class FoodItemListViewModel(
-    database: FoodDatabase,
+    private val database: FoodDatabase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(FoodItemListState())
@@ -59,7 +61,7 @@ class FoodItemListViewModel(
             is FoodItemListAction.LoadFoodItems -> {}
             is FoodItemListAction.OnFoodItemClicked -> {
                 viewModelScope.launch {
-                    navigationChannel.sendEvent(NavigationAction.OnFoodItemClick(action.foodItem.id!!))
+                    navigationChannel.sendEvent(OnFoodItemClick(action.foodItem.id!!))
                 }
             }
 
@@ -68,6 +70,13 @@ class FoodItemListViewModel(
                     navigationChannel.sendEvent(NavigationAction.OnNewFoodItemClick)
                 }
             }
+
+            is FoodItemListAction.OnDeleteFoodItemClick -> deleteFoodItem(action.foodItem)
         }
     }
+
+    private fun deleteFoodItem(foodItem: FoodItem) =
+        viewModelScope.launch {
+            database.foodItemDao().deleteFoodItem(foodItem)
+        }
 }

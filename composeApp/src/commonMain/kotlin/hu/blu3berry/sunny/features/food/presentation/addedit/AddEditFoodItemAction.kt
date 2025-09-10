@@ -1,4 +1,4 @@
-package hu.blu3berry.sunny.features.food.presentation
+package hu.blu3berry.sunny.features.food.presentation.addedit
 
 import hu.blu3berry.sunny.features.food.domain.model.FoodCategory
 import hu.blu3berry.sunny.features.food.domain.model.StorageLocation
