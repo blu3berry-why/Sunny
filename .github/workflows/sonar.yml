@@ -4,6 +4,7 @@ on:
     branches: [ main, kmp_with_analyze_tools ]
   pull_request:
     types: [ opened, synchronize, reopened ]
+
 jobs:
   sonar:
     runs-on: ubuntu-latest
@@ -11,22 +12,28 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
+          distribution: 'temurin'    # REQUIRED for setup-java@v3
           java-version: 17
+          cache: 'gradle'           # optional, speeds up builds
+
       - name: Cache SonarQube packages
         uses: actions/cache@v3
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
+
       - name: Cache Gradle packages
         uses: actions/cache@v3
         with:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: ${{ runner.os }}-gradle
+
       - name: Write & validate debug google-services.json
         env:
           GOOGLE_SERVICES_JSON_DEBUG_B64: ${{ secrets.GOOGLE_SERVICES_JSON_BASE_64 }}
