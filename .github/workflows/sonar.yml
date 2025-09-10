@@ -36,13 +36,13 @@ jobs:
             echo "::error:: Secret GOOGLE_SERVICES_JSON_DEBUG_B64 is empty or not set."
             exit 1
           fi
-          mkdir -p composeApp/src/debug
-          echo "$GOOGLE_SERVICES_JSON_DEBUG_B64" | base64 -d > composeApp/src/debug/google-services.json
-          sed -i '1s/^\xEF\xBB\xBF//' composeApp/src/debug/google-services.json || true
-          jq . composeApp/src/debug/google-services.json > /dev/null
-          grep -q '"project_info"' composeApp/src/debug/google-services.json
-          grep -q '"client"' composeApp/src/debug/google-services.json
-          grep -q '"package_name"[[:space:]]*:[[:space:]]*"hu\.blu3berry\.sunny\.dev"' composeApp/src/debug/google-services.json
+          mkdir -p composeApp/src/release
+          echo "$GOOGLE_SERVICES_JSON_DEBUG_B64" | base64 -d > composeApp/src/release/google-services.json
+          sed -i '1s/^\xEF\xBB\xBF//' composeApp/src/release/google-services.json || true
+          jq . composeApp/src/release/google-services.json > /dev/null
+          grep -q '"project_info"' composeApp/src/release/google-services.json
+          grep -q '"client"' composeApp/src/release/google-services.json
+          grep -q '"package_name"[[:space:]]*:[[:space:]]*"hu\.blu3berry\.sunny\.dev"' composeApp/src/release/google-services.json
 
       - name: Generate Kover reports
         run: ./gradlew koverXmlReport
