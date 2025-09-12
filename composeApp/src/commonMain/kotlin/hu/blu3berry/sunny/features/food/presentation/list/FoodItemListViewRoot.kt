@@ -81,46 +81,51 @@ fun FoodItemListView(
             Spacer(modifier = Modifier.height(16.dp))
 
             // Food items list
-            if (state.isLoading) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
+            when {
+                state.isLoading -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
                 }
-            } else if (state.error != null) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = state.error?.asString() ?: "",
-                        color = MaterialTheme.colorScheme.error
-                    )
-                }
-            } else if (state.foodItems.isEmpty()) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = if (state.searchQuery.isBlank())
-                            UiText.DynamicString("No food items found").asString()
-                        else
-                            UiText.DynamicString("No results for '${state.searchQuery}'")
-                                .asString(),
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                }
-            } else {
-                LazyColumn {
-                    items(state.foodItems) { foodItem ->
-                        FoodItemCard(
-                            foodItem = foodItem,
-                            onClick = { onAction(FoodItemListAction.OnFoodItemClicked(it)) },
-                            onDeleteClick = { onAction(FoodItemListAction.OnDeleteFoodItemClick(it)) }
+                state.error != null -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = state.error.asString(),
+                            color = MaterialTheme.colorScheme.error
                         )
-                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+                }
+                state.foodItems.isEmpty() -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = if (state.searchQuery.isBlank())
+                                UiText.DynamicString("No food items found").asString()
+                            else
+                                UiText.DynamicString("No results for '${state.searchQuery}'")
+                                    .asString(),
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    }
+                }
+                else -> {
+                    LazyColumn {
+                        items(state.foodItems) { foodItem ->
+                            FoodItemCard(
+                                foodItem = foodItem,
+                                onClick = { onAction(FoodItemListAction.OnFoodItemClicked(it)) },
+                                onDeleteClick = { onAction(FoodItemListAction.OnDeleteFoodItemClick(it)) }
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                        }
                     }
                 }
             }
