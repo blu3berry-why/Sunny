@@ -14,7 +14,7 @@ class SaveFoodItemUseCase(
      * Save a food item to the repository.
      * @param item The food item to save
      */
-    suspend operator fun invoke(item: FoodItem) {
+    suspend operator fun invoke(item: FoodItem){
         foodRepository.saveFoodItem(item)
     }
 }

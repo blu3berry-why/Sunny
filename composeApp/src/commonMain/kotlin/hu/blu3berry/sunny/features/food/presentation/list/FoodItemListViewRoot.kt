@@ -217,7 +217,8 @@ fun FoodItemCardPreview() {
             ),
             expirationDate = null,
             location = hu.blu3berry.sunny.features.food.domain.model.StorageLocation.FRIDGE,
-            notes = "Some notes"
+            notes = "Some notes",
+            userId = null,
         )
     )
 }

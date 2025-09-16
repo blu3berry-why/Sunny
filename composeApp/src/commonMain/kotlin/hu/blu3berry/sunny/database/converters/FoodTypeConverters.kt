@@ -6,6 +6,8 @@ import hu.blu3berry.sunny.features.food.domain.model.Quantity
 import hu.blu3berry.sunny.features.food.domain.model.StorageLocation
 import hu.blu3berry.sunny.features.food.domain.model.UnitOfMeasure
 import kotlinx.datetime.LocalDate
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 /**
  * Type converters for Room database to convert between custom types and database types.
@@ -69,4 +71,15 @@ class FoodTypeConverters {
     fun toLocalDate(value: String?): LocalDate? {
         return value?.let { LocalDate.parse(it) }
     }
+
+    // Uuid converters
+    @OptIn(ExperimentalUuidApi::class)
+    @TypeConverter
+    fun fromUuid(uuid: Uuid?): String? = uuid?.toString()
+
+    @OptIn(ExperimentalUuidApi::class)
+    @TypeConverter
+    fun toUuid(uuid: String?): Uuid? = uuid?.let { Uuid.parse(it) }
+
+
 }

@@ -2,6 +2,7 @@ package hu.blu3berry.sunny.features.food.presentation.addedit
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import hu.blu3berry.sunny.core.data.remote.upsertFoodItemToServer
 import hu.blu3berry.sunny.core.presentation.UiText
 import hu.blu3berry.sunny.core.presentation.navigation.sendEvent
 import hu.blu3berry.sunny.features.food.domain.usecase.GetFoodItemByIdUseCase
@@ -13,6 +14,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.random.Random
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 sealed class AddEditFoodItemViewModel(
 ) : ViewModel() {
@@ -99,9 +103,14 @@ class EditFoodItemViewModel(
         }
     }
 
+    @OptIn(ExperimentalUuidApi::class)
     override fun saveFoodItem() {
         viewModelScope.launch {
-            updateFoodItemUseCase(state.value.toFoodItem(id))
+            val foodItem = state.value.toFoodItem(id).copy(
+                userId = Uuid.random().toString()
+            )
+            updateFoodItemUseCase(foodItem)
+            upsertFoodItemToServer(foodItem)
         }
     }
 }
@@ -110,9 +119,15 @@ class AddFoodItemViewModel(
     private val saveFoodItemUseCase: SaveFoodItemUseCase,
 ) : AddEditFoodItemViewModel() {
 
+    @OptIn(ExperimentalUuidApi::class)
     override fun saveFoodItem() {
         viewModelScope.launch {
-            saveFoodItemUseCase(state.value.toFoodItem())
+            val foodItem = state.value.toFoodItem().copy(
+                id = Random.nextInt(-1000000, -1), // Temporary ID for local use
+                userId = Uuid.random().toString()
+            )
+            saveFoodItemUseCase(foodItem)
+            upsertFoodItemToServer(foodItem)
         }
     }
 }

@@ -2,6 +2,9 @@ package hu.blu3berry.sunny.features.food.presentation.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import hu.blu3berry.sunny.core.data.remote.deleteFoodItemFromServer
+import hu.blu3berry.sunny.core.data.remote.getAllFoodItemsFromServer
+import hu.blu3berry.sunny.core.data.remote.upsertFoodItemToServer
 import hu.blu3berry.sunny.core.presentation.navigation.sendEvent
 import hu.blu3berry.sunny.database.FoodDatabase
 import hu.blu3berry.sunny.features.food.domain.model.FoodItem
@@ -15,6 +18,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 class FoodItemListViewModel(
     private val database: FoodDatabase,
@@ -52,6 +57,10 @@ class FoodItemListViewModel(
         data object OnNewFoodItemClick : NavigationAction
     }
 
+    init {
+        refreshItemsFromRemote()
+    }
+
     fun onAction(action: FoodItemListAction) {
         when (action) {
             is FoodItemListAction.OnSearchQueryChanged -> {
@@ -75,8 +84,17 @@ class FoodItemListViewModel(
         }
     }
 
+    @OptIn(ExperimentalUuidApi::class)
     private fun deleteFoodItem(foodItem: FoodItem) =
         viewModelScope.launch {
             database.foodItemDao().deleteFoodItem(foodItem)
+            deleteFoodItemFromServer(foodItem.id ?: return@launch)
         }
+
+    private fun refreshItemsFromRemote() {
+        viewModelScope.launch {
+            database.foodItemDao().clearAll()
+            database.foodItemDao().upsertAll(getAllFoodItemsFromServer())
+        }
+    }
 }

@@ -77,6 +77,9 @@ kotlin {
             implementation(libs.bundles.coil)
             implementation(libs.kotlinx.datetime)
 
+            implementation(project.dependencies.platform(libs.supabase))
+            implementation(libs.supabase.postgrest)
+
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -102,12 +105,19 @@ android {
     namespace = "hu.blu3berry.sunny"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
+    buildFeatures {
+        buildConfig = true // <-- enable BuildConfig generation
+    }
     defaultConfig {
         applicationId = "hu.blu3berry.sunny"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionName = (project.findProperty("VERSION_NAME") as String?) ?: "0.0.1"
         versionCode = (project.findProperty("VERSION_CODE") as String?)?.toInt() ?: 1
+
+        buildConfigField("String", "SUPABASE_URL", "\"${System.getenv("SUPABASE_URL") ?: ""}\"")
+        buildConfigField("String", "SUPABASE_KEY", "\"${System.getenv("SUPABASE_KEY") ?: ""}\"")
+
     }
     buildTypes {
         getByName("debug") {

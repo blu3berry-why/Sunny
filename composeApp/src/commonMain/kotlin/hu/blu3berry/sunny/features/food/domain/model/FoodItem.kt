@@ -1,14 +1,19 @@
+@file:OptIn(ExperimentalUuidApi::class)
+
 package hu.blu3berry.sunny.features.food.domain.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.datetime.LocalDate
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 
 @Entity(tableName = "food_items")
 data class FoodItem(
     @PrimaryKey(autoGenerate = true)
     val id: Int? = null,
+    val userId: String?,
     val name: String,
     val category: FoodCategory,
     val quantity: Quantity,

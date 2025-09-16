@@ -14,7 +14,7 @@ import kotlinx.coroutines.IO
 
 @Database(
     entities = [FoodItem::class],
-    version = 2,
+    version = 3,
 )
 @TypeConverters(FoodTypeConverters::class)
 @ConstructedBy(FoodDatabaseConstructor::class)
@@ -32,7 +32,7 @@ fun getRoomDatabase(
     builder: RoomDatabase.Builder<FoodDatabase>
 ): FoodDatabase {
     return builder
-        .fallbackToDestructiveMigrationOnDowngrade(true)
+        .fallbackToDestructiveMigration(true)
         .setDriver(BundledSQLiteDriver())
         .setQueryCoroutineContext(Dispatchers.IO)
         .build()

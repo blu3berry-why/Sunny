@@ -51,10 +51,12 @@ fun DatePickerModalInput(
 }
 
 
+    @OptIn(ExperimentalTime::class)
     fun Long.toLocalDateTime(timeZone: TimeZone = TimeZone.currentSystemDefault()): LocalDateTime {
         return kotlinx.datetime.Instant.fromEpochMilliseconds(this).toLocalDateTime(timeZone)
     }
 
+@OptIn(ExperimentalTime::class)
 fun LocalDate.toEpochMilliseconds(): Long {
     return this.atStartOfDayIn(TimeZone.UTC).toEpochMilliseconds()
 }

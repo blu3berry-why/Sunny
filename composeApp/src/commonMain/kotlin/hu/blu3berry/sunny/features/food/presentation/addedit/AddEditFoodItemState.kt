@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalUuidApi::class)
+
 package hu.blu3berry.sunny.features.food.presentation.addedit
 
 import hu.blu3berry.sunny.core.presentation.UiText
@@ -7,6 +9,7 @@ import hu.blu3berry.sunny.features.food.domain.model.Quantity
 import hu.blu3berry.sunny.features.food.domain.model.StorageLocation
 import hu.blu3berry.sunny.features.food.domain.model.UnitOfMeasure
 import kotlinx.datetime.LocalDate
+import kotlin.uuid.ExperimentalUuidApi
 
 data class AddEditFoodItemState(
     val name: String = "",
@@ -24,6 +27,7 @@ data class AddEditFoodItemState(
 fun AddEditFoodItemState.toFoodItem(id : Int? = null): FoodItem {
     return FoodItem(
         id = id,
+        userId = null,
         name = name,
         category = category,
         quantity = Quantity(amount, unit),
