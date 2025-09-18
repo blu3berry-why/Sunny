@@ -2,7 +2,6 @@ package hu.blu3berry.sunny.features.food.presentation.addedit
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import hu.blu3berry.sunny.core.data.remote.upsertFoodItemToServer
 import hu.blu3berry.sunny.core.presentation.UiText
 import hu.blu3berry.sunny.core.presentation.navigation.sendEvent
 import hu.blu3berry.sunny.features.food.domain.usecase.GetFoodItemByIdUseCase

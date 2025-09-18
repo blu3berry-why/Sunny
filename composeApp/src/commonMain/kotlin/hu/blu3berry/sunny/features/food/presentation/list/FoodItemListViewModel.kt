@@ -4,11 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import hu.blu3berry.sunny.core.data.remote.deleteFoodItemFromServer
 import hu.blu3berry.sunny.core.data.remote.getAllFoodItemsFromServer
-import hu.blu3berry.sunny.core.data.remote.upsertFoodItemToServer
 import hu.blu3berry.sunny.core.presentation.navigation.sendEvent
 import hu.blu3berry.sunny.database.FoodDatabase
 import hu.blu3berry.sunny.features.food.domain.model.FoodItem
-import hu.blu3berry.sunny.features.food.presentation.list.FoodItemListViewModel.NavigationAction.*
+import hu.blu3berry.sunny.features.food.presentation.list.FoodItemListViewModel.NavigationAction.OnFoodItemClick
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -19,7 +18,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
 class FoodItemListViewModel(
     private val database: FoodDatabase,
@@ -76,7 +74,7 @@ class FoodItemListViewModel(
 
             FoodItemListAction.OnNewFoodItemClick -> {
                 viewModelScope.launch {
-                    navigationChannel.sendEvent(NavigationAction.OnNewFoodItemClick)
+                    navigationChannel.sendEvent(event = NavigationAction.OnNewFoodItemClick)
                 }
             }
 

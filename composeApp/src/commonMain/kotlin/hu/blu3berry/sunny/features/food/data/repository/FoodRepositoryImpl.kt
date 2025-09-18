@@ -1,6 +1,5 @@
 package hu.blu3berry.sunny.features.food.data.repository
 
-import androidx.room.coroutines.createFlow
 import hu.blu3berry.sunny.core.data.remote.deleteFoodItemFromServer
 import hu.blu3berry.sunny.core.data.remote.getAllFoodItemsFromServer
 import hu.blu3berry.sunny.core.data.remote.upsertFoodItemToServer
@@ -10,7 +9,6 @@ import hu.blu3berry.sunny.features.food.domain.repository.FoodRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
 
 /**
  * Implementation of the FoodRepository interface.

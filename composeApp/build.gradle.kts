@@ -95,11 +95,6 @@ kotlin {
         nativeMain.dependencies {
             implementation(libs.ktor.client.darwin)
         }
-        val desktopTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
-            }
-        }
 
         dependencies {
             ksp(libs.androidx.room.compiler)
