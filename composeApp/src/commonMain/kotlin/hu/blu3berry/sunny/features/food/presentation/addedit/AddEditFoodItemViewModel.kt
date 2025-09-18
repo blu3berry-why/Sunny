@@ -110,7 +110,6 @@ class EditFoodItemViewModel(
                 userId = Uuid.random().toString()
             )
             updateFoodItemUseCase(foodItem)
-            upsertFoodItemToServer(foodItem)
         }
     }
 }
@@ -127,7 +126,6 @@ class AddFoodItemViewModel(
                 userId = Uuid.random().toString()
             )
             saveFoodItemUseCase(foodItem)
-            upsertFoodItemToServer(foodItem)
         }
     }
 }

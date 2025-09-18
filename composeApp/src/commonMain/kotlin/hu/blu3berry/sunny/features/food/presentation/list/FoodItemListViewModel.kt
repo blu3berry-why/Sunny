@@ -93,7 +93,6 @@ class FoodItemListViewModel(
 
     private fun refreshItemsFromRemote() {
         viewModelScope.launch {
-            database.foodItemDao().clearAll()
             database.foodItemDao().upsertAll(getAllFoodItemsFromServer())
         }
     }

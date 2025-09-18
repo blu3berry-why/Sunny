@@ -24,7 +24,7 @@ interface FoodRepository {
      * Get all food items from the data source.
      * @return A Flow of the list of food items
      */
-    fun getAllFoodItems(): Flow<List<FoodItem>>
+    suspend fun getAllFoodItems(): Flow<List<FoodItem>>
 
     /**
      * Get a food item by its ID.
@@ -38,5 +38,5 @@ interface FoodRepository {
      * @param id The ID of the food item to retrieve
      * @return A Flow of the food item if found, null otherwise
      */
-    fun getFoodItemByIdFlow(id: Int): Flow<FoodItem?>
+    suspend fun getFoodItemByIdFlow(id: Int): Flow<FoodItem?>
 }
