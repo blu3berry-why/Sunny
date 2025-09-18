@@ -53,9 +53,9 @@ jobs:
           grep -q '"project_info"' composeApp/src/release/google-services.json
           grep -q '"client"' composeApp/src/release/google-services.json
           grep -q '"package_name"[[:space:]]*:[[:space:]]*"hu\.blu3berry\.sunny\.dev"' composeApp/src/release/google-services.json
-#       Currently there are no tests, so no coverage to report is needed
-#      - name: Generate Kover reports
-#        run: ./gradlew koverXmlReport
+
+      - name: Generate Kover reports
+        run: ./gradlew koverXmlReport
       - name: Run SonarCloud Analysis
         run: |
           ./gradlew sonar --stacktrace --info \

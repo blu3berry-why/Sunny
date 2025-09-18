@@ -41,6 +41,7 @@ kotlin {
 
     sourceSets {
         val desktopMain by getting
+        val commonTest by getting
 
         androidMain.dependencies {
             implementation(compose.preview)
@@ -93,6 +94,11 @@ kotlin {
         }
         nativeMain.dependencies {
             implementation(libs.ktor.client.darwin)
+        }
+        val desktopTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+            }
         }
 
         dependencies {
@@ -161,7 +167,9 @@ compose.desktop {
 }
 
 kover {
+
     reports {
+
         filters {
             excludes {
                 annotatedBy("androidx.compose.runtime.Composable")
@@ -186,3 +194,4 @@ kover {
         }
     }
 }
+
