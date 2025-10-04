@@ -1,8 +1,8 @@
-package hu.blu3berry.sunny.features.food.data.remote
+package hu.blu3berry.sunny.features.food.data.model
 
-import kotlinx.serialization.Serializable
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.Contextual
+import kotlinx.serialization.Serializable
 
 @Serializable
 data class FoodItemDto(

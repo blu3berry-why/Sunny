@@ -1,5 +1,7 @@
 package hu.blu3berry.sunny.features.food.domain.di
 
+import hu.blu3berry.sunny.features.food.data.remote.RemoteFoodDataSource
+import hu.blu3berry.sunny.features.food.data.remote.SupabaseRemoteFoodDataSource
 import hu.blu3berry.sunny.features.food.data.repository.FoodRepositoryImpl
 import hu.blu3berry.sunny.features.food.domain.repository.FoodRepository
 import hu.blu3berry.sunny.features.food.domain.usecase.GetFoodItemByIdUseCase
@@ -18,6 +20,7 @@ import org.koin.dsl.module
 val FoodSharedModule = module {
     // Data layer
     single { get<hu.blu3berry.sunny.database.FoodDatabase>().foodItemDao() }
+    singleOf(::SupabaseRemoteFoodDataSource) bind RemoteFoodDataSource::class
     singleOf(::FoodRepositoryImpl) bind FoodRepository::class
 
     // Domain layer
