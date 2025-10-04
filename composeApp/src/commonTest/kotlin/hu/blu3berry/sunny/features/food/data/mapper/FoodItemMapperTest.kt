@@ -1,6 +1,6 @@
 package hu.blu3berry.sunny.features.food.data.mapper
 
-import hu.blu3berry.sunny.features.food.data.remote.FoodItemDto
+import hu.blu3berry.sunny.features.food.data.model.FoodItemDto
 import hu.blu3berry.sunny.features.food.domain.model.FoodCategory
 import hu.blu3berry.sunny.features.food.domain.model.FoodItem
 import hu.blu3berry.sunny.features.food.domain.model.Quantity

@@ -1,9 +1,7 @@
 package hu.blu3berry.sunny.features.food.data.repository
 
-import hu.blu3berry.sunny.core.data.remote.deleteFoodItemFromServer
-import hu.blu3berry.sunny.core.data.remote.getAllFoodItemsFromServer
-import hu.blu3berry.sunny.core.data.remote.upsertFoodItemToServer
 import hu.blu3berry.sunny.features.food.data.database.FoodItemDao
+import hu.blu3berry.sunny.features.food.data.remote.RemoteFoodDataSource
 import hu.blu3berry.sunny.features.food.domain.model.FoodItem
 import hu.blu3berry.sunny.features.food.domain.repository.FoodRepository
 import kotlinx.coroutines.async
@@ -15,17 +13,20 @@ import kotlinx.coroutines.flow.Flow
  * This class is in the data layer and knows about the data sources.
  */
 class FoodRepositoryImpl(
-    private val foodItemDao: FoodItemDao
+    private val foodItemDao: FoodItemDao,
+    private val remoteFoodDataSource: RemoteFoodDataSource
 ) : FoodRepository {
 
     override suspend fun saveFoodItem(foodItem: FoodItem) {
-        upsertFoodItemToServer(foodItem)
-        foodItemDao.upsertFoodItem(foodItem)
+        val updatedFoodItem = remoteFoodDataSource.upsertFoodItem(foodItem)
+        foodItemDao.upsertFoodItem(updatedFoodItem)
     }
 
     override suspend fun deleteFoodItem(foodItem: FoodItem) {
-        deleteFoodItemFromServer(foodItem.id!!)
-        foodItemDao.deleteFoodItem(foodItem)
+        foodItem.id?.let { id ->
+            remoteFoodDataSource.deleteFoodItem(id)
+            foodItemDao.deleteFoodItem(foodItem)
+        }
     }
 
     override suspend fun getAllFoodItems(): Flow<List<FoodItem>> {
@@ -43,9 +44,13 @@ class FoodRepositoryImpl(
         return foodItemDao.getFoodItemByIdFlow(id)
     }
 
+    override fun getAllFoodItemsAsFlow(): Flow<List<FoodItem>> {
+        return foodItemDao.getAllFoodItems()
+    }
+
     suspend fun refreshFoodItems() = coroutineScope {
         async {
-            val foodItems = getAllFoodItemsFromServer()
+            val foodItems = remoteFoodDataSource.getAllFoodItems()
             foodItemDao.upsertAll(foodItems)
         }
     }

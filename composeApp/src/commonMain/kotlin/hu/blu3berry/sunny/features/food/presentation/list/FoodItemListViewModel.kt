@@ -2,11 +2,9 @@ package hu.blu3berry.sunny.features.food.presentation.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import hu.blu3berry.sunny.core.data.remote.deleteFoodItemFromServer
-import hu.blu3berry.sunny.core.data.remote.getAllFoodItemsFromServer
 import hu.blu3berry.sunny.core.presentation.navigation.sendEvent
-import hu.blu3berry.sunny.database.FoodDatabase
 import hu.blu3berry.sunny.features.food.domain.model.FoodItem
+import hu.blu3berry.sunny.features.food.domain.repository.FoodRepository
 import hu.blu3berry.sunny.features.food.presentation.list.FoodItemListViewModel.NavigationAction.OnFoodItemClick
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,13 +18,11 @@ import kotlinx.serialization.Serializable
 import kotlin.uuid.ExperimentalUuidApi
 
 class FoodItemListViewModel(
-    private val database: FoodDatabase,
+    private val repository: FoodRepository,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(FoodItemListState())
-    val foodItems = database
-        .foodItemDao()
-        .getAllFoodItems()
+    val foodItems = repository.getAllFoodItemsAsFlow()
     val state = combine(
         _state,
         foodItems
@@ -85,13 +81,12 @@ class FoodItemListViewModel(
     @OptIn(ExperimentalUuidApi::class)
     private fun deleteFoodItem(foodItem: FoodItem) =
         viewModelScope.launch {
-            database.foodItemDao().deleteFoodItem(foodItem)
-            deleteFoodItemFromServer(foodItem.id ?: return@launch)
+            repository.deleteFoodItem(foodItem)
         }
 
     private fun refreshItemsFromRemote() {
         viewModelScope.launch {
-            database.foodItemDao().upsertAll(getAllFoodItemsFromServer())
+            repository.getAllFoodItems()
         }
     }
 }

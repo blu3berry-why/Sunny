@@ -1,9 +1,8 @@
 package hu.blu3berry.sunny.features.food.data.mapper
 
-import hu.blu3berry.sunny.features.food.data.remote.FoodItemDto
+import hu.blu3berry.sunny.features.food.data.model.FoodItemDto
 import hu.blu3berry.sunny.features.food.domain.model.FoodItem
 import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
 /*
  TODO: Be prepared to handle IllegalArgumentException when using valueOf if server data contains unexpected enum strings — validate or fallback if necessary.

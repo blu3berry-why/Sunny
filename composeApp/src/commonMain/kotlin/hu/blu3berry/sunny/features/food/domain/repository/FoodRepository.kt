@@ -39,4 +39,6 @@ interface FoodRepository {
      * @return A Flow of the food item if found, null otherwise
      */
     suspend fun getFoodItemByIdFlow(id: Int): Flow<FoodItem?>
+
+    fun getAllFoodItemsAsFlow(): Flow<List<FoodItem>>
 }

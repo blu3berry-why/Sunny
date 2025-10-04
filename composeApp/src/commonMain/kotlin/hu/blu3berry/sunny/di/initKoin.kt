@@ -1,5 +1,6 @@
 package hu.blu3berry.sunny.di
 
+import hu.blu3berry.sunny.core.data.remote.supabaseModule
 import hu.blu3berry.sunny.database.di.DatabaseModule
 import hu.blu3berry.sunny.database.di.DatabaseSharedModule
 import hu.blu3berry.sunny.features.food.domain.di.FoodSharedModule
@@ -13,6 +14,7 @@ fun initKoin(config: KoinAppDeclaration? = null) {
             DatabaseModule,
             FoodSharedModule,
             DatabaseSharedModule,
+            supabaseModule,
         )
     }
 }
